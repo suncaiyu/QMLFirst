@@ -12,15 +12,21 @@ Window {
     width: 640
     height: 480
     title: qsTr("Hello World");
-    property string dest: "D:\\qtproject\\ImageProcessor\\heibai.jpg";
-    property string qmldest: "file:///"+dest;
 
 
     ImageProcessor{
         id:processor;
         onMyfinish:{
-            console.log("777");
-            imageview.source = qmldest;
+            switch(mtype){
+            case ImageProcessor.HEIBAI:
+                imageview.source = "file:///"+path;
+                break;
+            case ImageProcessor.HUIDU:
+                imageview.source = "file:///"+path;
+                break;
+            default:
+                break;
+            }
         }
     }
 
@@ -69,6 +75,9 @@ Window {
                      ToolButton{
                          text:"灰度";
                          style: buttonstyle
+                         onClicked: {
+                             processor.process(filedialog.fileUrl, ImageProcessor.HUIDU)
+                         }
                      }
                      ToolButton{
                          text:"浮雕";
@@ -78,8 +87,8 @@ Window {
                          text:"黑白";
                          style: buttonstyle
                          onClicked: {
-                             if(!imageview.Null){
-                                 processor.process(filedialog.fileUrl, dest, processor.Heibai);
+                             if(filedialog.fileUrl != ""){
+                                 processor.process(filedialog.fileUrl, ImageProcessor.HEIBAI);
                              }
                          }
                      }

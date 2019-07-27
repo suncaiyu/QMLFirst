@@ -11,17 +11,18 @@ public:
         HUIDU,
         RUIHUA,
         DIPIAN,
-        FUDIAO,ROUHUA
+        FUDIAO,
+        ROUHUA
     };
     Q_OBJECT
-//    Q_ENUMS(Handletype)
+    Q_ENUMS(Handletype)
 public:
     ImageProcessor(QObject *parent = 0);
     ~ImageProcessor();
     void Binarize(QString sourcefile, QString destfile);
-    Q_INVOKABLE void process(QString, QString, Handletype);
+    Q_INVOKABLE void process(QString, Handletype);
 signals:
-    void myfinish(Handletype);
+    void myfinish(Handletype mtype, QString path);
 
 };
 
@@ -29,10 +30,11 @@ class Runnable : public QThread
 {
     Q_OBJECT
 public:
-    Runnable(QString, QString, ImageProcessor::Handletype, ImageProcessor *);
+    Runnable(QString, ImageProcessor::Handletype, ImageProcessor *);
     void run();
 
     void Binarize(QString sourcefile, QString destfile);
+    void Gray(QString, QString);
 private:
     QString m_source;
     QString m_dest;
