@@ -59,8 +59,12 @@ void Runnable::run()
         emit p->myfinish(m_type, path+"/heibai.jpg");
         break;
     case ImageProcessor::HUIDU:
-        Gray(m_source, path+"//huidu.jpg");
-        emit p->myfinish(m_type,path+"//huidu.jpg");
+        Gray(m_source, path+"/huidu.jpg");
+        emit p->myfinish(m_type,path+"/huidu.jpg");
+        break;
+    case ImageProcessor::ROUHUA:
+        Soften(m_source, path+"/rouhua.jpg");
+        emit p->myfinish(m_type, path+"/rouhua.jpg");
         break;
     default:
         break;
@@ -113,6 +117,91 @@ void Runnable::Gray(QString sourceFile, QString destFile)
             color = image.pixel(i, j);
             gray = qGray(color);
             image.setPixel(i, j, qRgba(gray, gray, gray, qAlpha(color)));
+        }
+    }
+
+    image.save(destFile);
+}
+
+void Runnable::Soften(QString sourceFile, QString destFile)
+{
+    QUrl url(sourceFile);
+    QImage image(url.toLocalFile());
+    if(image.isNull())
+    {
+        qDebug() << "load " << sourceFile << " failed! ";
+        return;
+    }
+    int width = image.width();
+    int height = image.height();
+    int r, g, b;
+    QRgb color;
+    int xLimit = width - 1;
+    int yLimit = height - 1;
+    for(int i = 1; i < xLimit; i++)
+    {
+        for(int j = 1; j < yLimit; j++)
+        {
+            r = 0;
+            g = 0;
+            b = 0;
+            for(int m = 0; m < 9; m++)
+            {
+                int s = 0;
+                int p = 0;
+                switch(m)
+                {
+                case 0:
+                    s = i - 1;
+                    p = j - 1;
+                    break;
+                case 1:
+                    s = i;
+                    p = j - 1;
+                    break;
+                case 2:
+                    s = i + 1;
+                    p = j - 1;
+                    break;
+                case 3:
+                    s = i + 1;
+                    p = j;
+                    break;
+                case 4:
+                    s = i + 1;
+                    p = j + 1;
+                    break;
+                case 5:
+                    s = i;
+                    p = j + 1;
+                    break;
+                case 6:
+                    s = i - 1;
+                    p = j + 1;
+                    break;
+                case 7:
+                    s = i - 1;
+                    p = j;
+                    break;
+                case 8:
+                    s = i;
+                    p = j;
+                }
+                color = image.pixel(s, p);
+                r += qRed(color);
+                g += qGreen(color);
+                b += qBlue(color);
+            }
+
+            r = (int) (r / 9.0);
+            g = (int) (g / 9.0);
+            b = (int) (b / 9.0);
+
+            r = qMin(255, qMax(0, r));
+            g = qMin(255, qMax(0, g));
+            b = qMin(255, qMax(0, b));
+
+            image.setPixel(i, j, qRgb(r, g, b));
         }
     }
 
