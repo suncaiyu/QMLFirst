@@ -35,6 +35,7 @@ public:
 
     void Binarize(QString sourcefile, QString destfile);
     void Gray(QString, QString);
+    void Soften(QString, QString);
 private:
     QString m_source;
     QString m_dest;

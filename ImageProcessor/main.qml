@@ -17,16 +17,7 @@ Window {
     ImageProcessor{
         id:processor;
         onMyfinish:{
-            switch(mtype){
-            case ImageProcessor.HEIBAI:
-                imageview.source = "file:///"+path;
-                break;
-            case ImageProcessor.HUIDU:
-                imageview.source = "file:///"+path;
-                break;
-            default:
-                break;
-            }
+            imageview.source = "file:///"+path;
         }
     }
 
@@ -71,12 +62,15 @@ Window {
                      ToolButton{
                          text:"柔化";
                          style: buttonstyle
+                         onClicked: {
+                             processor.process(filedialog.fileUrl, ImageProcessor.ROUHUA);
+                         }
                      }
                      ToolButton{
                          text:"灰度";
                          style: buttonstyle
                          onClicked: {
-                             processor.process(filedialog.fileUrl, ImageProcessor.HUIDU)
+                             processor.process(filedialog.fileUrl, ImageProcessor.HUIDU);
                          }
                      }
                      ToolButton{
