@@ -39,10 +39,6 @@ Window {
     }
 
 
-//    ImageProcessor{
-//        id:processor;
-//    }
-
     ToolBar{
     id:toolbar;
     height:32;
@@ -93,6 +89,9 @@ Window {
                      ToolButton{
                          text:"锐化";
                          style: buttonstyle
+                         onClicked: {
+                             processor.process(filedialog.fileUrl, ImageProcessor.RUIHUA);
+                         }
                      }
                  }
 
