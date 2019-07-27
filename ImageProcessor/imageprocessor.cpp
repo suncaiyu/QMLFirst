@@ -66,6 +66,10 @@ void Runnable::run()
         Soften(m_source, path+"/rouhua.jpg");
         emit p->myfinish(m_type, path+"/rouhua.jpg");
         break;
+    case ImageProcessor::RUIHUA:
+        Sharpen(m_source, path+"/ruihua.jpg");
+        emit p->myfinish(m_type, path+"/ruihua.jpg");
+        break;
     default:
         break;
     }
@@ -206,4 +210,60 @@ void Runnable::Soften(QString sourceFile, QString destFile)
     }
 
     image.save(destFile);
+}
+
+void Runnable::Sharpen(QString sourceFile, QString destFile)
+{
+    QUrl url(sourceFile);
+    QImage image(url.toLocalFile());
+    if(image.isNull())
+    {
+        qDebug() << "load " << sourceFile << " failed! ";
+        return;
+    }
+    int width = image.width();
+    int height = image.height();
+    int threshold = 80;
+    QImage sharpen(width, height, QImage::Format_ARGB32);
+    int r, g, b, gradientR, gradientG, gradientB;
+    QRgb rgb00, rgb01, rgb10;
+    for(int i = 0; i < width; i++)
+    {
+        for(int j= 0; j < height; j++)
+        {
+            if(image.valid(i, j) &&
+                    image.valid(i+1, j) &&
+                    image.valid(i, j+1))
+            {
+                rgb00 = image.pixel(i, j);
+                rgb01 = image.pixel(i, j+1);
+                rgb10 = image.pixel(i+1, j);
+                r = qRed(rgb00);
+                g = qGreen(rgb00);
+                b = qBlue(rgb00);
+                gradientR = abs(r - qRed(rgb01)) + abs(r - qRed(rgb10));
+                gradientG = abs(g - qGreen(rgb01)) + abs(g - qGreen(rgb10));
+                gradientB = abs(b - qBlue(rgb01)) + abs(b - qBlue(rgb10));
+
+                if(gradientR > threshold)
+                {
+                    r = qMin(gradientR + 100, 255);
+                }
+
+                if(gradientG > threshold)
+                {
+                    g = qMin( gradientG + 100, 255);
+                }
+
+                if(gradientB > threshold)
+                {
+                    b = qMin( gradientB + 100, 255);
+                }
+
+                sharpen.setPixel(i, j, qRgb(r, g, b));
+            }
+        }
+    }
+
+    sharpen.save(destFile);
 }
