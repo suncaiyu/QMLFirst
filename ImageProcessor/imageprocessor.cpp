@@ -267,3 +267,5 @@ void Runnable::Sharpen(QString sourceFile, QString destFile)
 
     sharpen.save(destFile);
 }
+
+void test(){cout<<"what?"<<endl;}
