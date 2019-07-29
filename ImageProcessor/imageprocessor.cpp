@@ -240,6 +240,4 @@ void Runnable::Sharpen(QString sourceFile, QString destFile) {
 }
 
 void test() { cout << "what?" << endl; }
-void ssss()
-{cout << "what?" << endl; 
-}
+void ssss() { cout << "what?" << endl; }
